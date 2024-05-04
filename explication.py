@@ -51,41 +51,41 @@ def play_with_computer():
 play_with_button = tk.Button(root, text='Play with human', font=('Ariel', 15), command=play_with_human)
 play_with_button.pack()
 
-# Variable to keep track of the current player
+# Variable to keep track (watch) of the current player
 current_chr = "X"
 
 # Creating the play area frame
 play_area = tk.Frame(root, width=300, height=300, bg='white')
 
 # Lists to keep track of X and O points
-XO_points = []
-X_points = []
-O_points = []
+XO_points = [] # List of all points
+X_points = [] # List of all X points
+O_points = [] # List of all O points
 
 # Class to represent each point on the game grid
 class XOPoint:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-        self.value = None
-        self.button = tk.Button(play_area, text="", width=10, height=5, command=self.set)
-        self.button.grid(row=x, column=y)
+    def __init__(self, x, y): 
+        self.x = x # x-coordinate of the point
+        self.y = y # y-coordinate of the point
+        self.value = None # Value of the point (X, O, or None)
+        self.button = tk.Button(play_area, text="", width=10, height=5, command=self.set) # Button widget representing the point
+        self.button.grid(row=x, column=y) # Packing the button into the play area
 
     # Function to set the value of the point
     def set(self):
         global current_chr
-        if not self.value:
-            self.button.configure(text=current_chr, bg='snow', fg='black')
-            self.value = current_chr
+        if not self.value: # If the point is empty
+            self.button.configure(text=current_chr, bg='snow', fg='black') # Setting the text and background color of the button
+            self.value = current_chr # Setting the value of the point
             # Updating the player's turn
-            if current_chr == "X":
-                X_points.append(self)
-                current_chr = "O"
-                status_label.configure(text="O's turn")
-            elif current_chr == "O":
-                O_points.append(self)
-                current_chr = "X"
-                status_label.configure(text="X's turn")
+            if current_chr == "X": 
+                X_points.append(self) # Adding the point to the list of X points
+                current_chr = "O" # Changing the current player to O
+                status_label.configure(text="O's turn") # Updating the status label
+            elif current_chr == "O": 
+                O_points.append(self) # Adding the point to the list of O points
+                current_chr = "X" # Changing the current player to X
+                status_label.configure(text="X's turn") # Updating the status label
         # Checking for a win or draw
         check_win()
         if play_with == "Computer" and status_label['text'] == "O's turn":
