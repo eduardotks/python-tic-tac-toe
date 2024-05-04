@@ -5,7 +5,7 @@ import tkinter as tk
 root = tk.Tk()
 
 # Making the window not resizable
-root.resizable(True, False) # Change the first parameter to True to make the window resizable in the x-direction
+root.resizable(False, False) # Change the first parameter to True to make the window resizable in the x-direction
 
 # Setting the title of the window
 root.title("Tic Tac Toe for English")
@@ -24,7 +24,8 @@ def play_again():
     # Resetting all points
     for point in XO_points: # XO_points is a list of all points in the game
         point.button.configure(state=tk.NORMAL) # Making the point clickable
-        point.reset() 
+        print("Here Im Again")
+        point.reset()  
     status_label.configure(text="X's turn") # Setting the status label to show that it's X's turn
     play_again_button.pack_forget() # Hiding the play again button
 
@@ -93,11 +94,11 @@ class XOPoint:
 
     # Function to reset the point
     def reset(self):
-        self.button.configure(text="", bg='lightgray')
+        self.button.configure(text="", bg='lightgray')  
         if self.value == "X":
-            X_points.remove(self)
+            X_points.remove(self) # Removing the point from the list of X points
         elif self.value == "O":
-            O_points.remove(self)
+            O_points.remove(self) # Removing the point from the list of O points
         self.value = None
 
 # Creating XOPoint objects for each cell in the grid
@@ -108,7 +109,7 @@ for x in range(1, 4):
 # Class to represent winning possibilities
 class WinningPossibility:
     def __init__(self, x1, y1, x2, y2, x3, y3):
-        self.x1 = x1 # x-coordinate of the first point
+        self.x1 = x1 # x-coordinate of the first point 
         self.y1 = y1 # y-coordinate of the first point
         self.x2 = x2 # x-coordinate of the second point
         self.y2 = y2 # y-coordinate of the second point
@@ -117,133 +118,131 @@ class WinningPossibility:
 
     # Function to check if a winning possibility is satisfied
     def check(self, for_chr):
-        self.p1_satisfied = False
+        self.p1_satisfied = False   
         self.p2_satisfied = False
         self.p3_satisfied = False
         if for_chr == 'X':
-            for point in X_points:
-                if point.x == self.x1 and point.y == self.y1:
-                    self.p1_satisfied = True
-                elif point.x == self.x2 and point.y == self.y2:
+            for point in X_points:  # X_points is a list of all X points
+                if point.x == self.x1 and point.y == self.y1: # If the first point is satisfied
+                    self.p1_satisfied = True # Mark the first point as satisfied
+                elif point.x == self.x2 and point.y == self.y2: 
                     self.p2_satisfied = True
                 elif point.x == self.x3 and point.y == self.y3:
                     self.p3_satisfied = True
         elif for_chr == 'O':
-            for point in O_points:
-                if point.x == self.x1 and point.y == self.y1:
-                    self.p1_satisfied = True
-                elif point.x == self.x2 and point.y == self.y2:
+            for point in O_points: # O_points is a list of all O points
+                if point.x == self.x1 and point.y == self.y1: # If the first point is satisfied
+                    self.p1_satisfied = True # Mark the first point as satisfied
+                elif point.x == self.x2 and point.y == self.y2: 
                     self.p2_satisfied = True
                 elif point.x == self.x3 and point.y == self.y3:
                     self.p3_satisfied = True
-        return all([self.p1_satisfied, self.p2_satisfied, self.p3_satisfied])
+        return all([self.p1_satisfied, self.p2_satisfied, self.p3_satisfied]) # Return True if all points are satisfied
 
 # List of winning possibilities
-winning_possibilities = [
-    WinningPossibility(1, 1, 1, 2, 1, 3),
-    WinningPossibility(2, 1, 2, 2, 2, 3),
-    WinningPossibility(3, 1, 3, 2, 3, 3),
-    WinningPossibility(1, 1, 2, 1, 3, 1),
-    WinningPossibility(1, 2, 2, 2, 3, 2),
-    WinningPossibility(1, 3, 2, 3, 3, 3),
-    WinningPossibility(1, 1, 2, 2, 3, 3),
-    WinningPossibility(3, 1, 2, 2, 1, 3)
+winning_possibilities = [ 
+    WinningPossibility(1, 1, 1, 2, 1, 3), # Horizontal possibilities 
+    WinningPossibility(2, 1, 2, 2, 2, 3), # Horizontal possibilities
+    WinningPossibility(3, 1, 3, 2, 3, 3), # Horizontal possibilities
+    WinningPossibility(1, 1, 2, 1, 3, 1), # Vertical possibilities
+    WinningPossibility(1, 2, 2, 2, 3, 2), # Vertical possibilities
+    WinningPossibility(1, 3, 2, 3, 3, 3), # Vertical possibilities
+    WinningPossibility(1, 1, 2, 2, 3, 3), # Diagonal possibilities
+    WinningPossibility(3, 1, 2, 2, 1, 3)  # Diagonal possibilities 
 ]
 
 # Function to disable the game after it's finished
 def disable_game():
-    for point in XO_points:
-        point.button.configure(state=tk.DISABLED)
-    play_again_button.pack()
+    for point in XO_points: # XO_points is a list of all points
+        point.button.configure(state=tk.DISABLED) # Disabling the button
+    play_again_button.pack() # Packing the play again button
 
 # Function to check if the game has been won or drawn
 def check_win():
-    for possibility in winning_possibilities:
-        if possibility.check('X'):
-            status_label.configure(text="X won!")
-            disable_game()
-            return
-        elif possibility.check('O'):
-            status_label.configure(text="O won!")
-            disable_game()
-            return
-    if len(X_points) + len(O_points) == 9:
-        status_label.configure(text="Draw!")
-        disable_game()
+    for possibility in winning_possibilities: # For each winning possibility
+        if possibility.check('X'): # If the possibility is satisfied by X
+            status_label.configure(text="X won!") # Set the status label to show that X won
+            disable_game() # Disable the game
+            return # Exit the function
+        elif possibility.check('O'): # If the possibility is satisfied by O
+            status_label.configure(text="O won!") # Set the status label to show that O won
+            disable_game() # Disable the game
+            return # Exit the function
+    if len(X_points) + len(O_points) == 9: # If all points are occupied
+        status_label.configure(text="Draw!") # Set the status label to show that the game is a draw
+        disable_game() # Disable the game
 
 # Packing the play area into the root window
-play_area.pack(pady=10, padx=10)
+play_area.pack(pady=10, padx=50) 
 
 
 def auto_play():
-
-
     # If winning is possible in the next move
-    for winning_possibility in winning_possibilities:
-        winning_possibility.check('O')
-        if winning_possibility.p1_satisfied and winning_possibility.p2_satisfied:
-            for point in XO_points:
-                if point.x == winning_possibility.x3 and point.y == winning_possibility.y3 and point not in X_points + O_points:
-                    point.set()
-                    return
-        elif winning_possibility.p2_satisfied and winning_possibility.p3_satisfied:
-            for point in XO_points:
-                if point.x == winning_possibility.x1 and point.y == winning_possibility.y1 and point not in X_points + O_points:
-                    point.set()
-                    return
-        elif winning_possibility.p3_satisfied and winning_possibility.p1_satisfied:
-            for point in XO_points:
-                if point.x == winning_possibility.x2 and point.y == winning_possibility.y2 and point not in X_points + O_points:
-                    point.set()
-                    return
+    for winning_possibility in winning_possibilities: # For each winning possibility
+        winning_possibility.check('O') # Check if the possibility is satisfied by O
+        if winning_possibility.p1_satisfied and winning_possibility.p2_satisfied: # If the first two points are satisfied
+            for point in XO_points: # For each point in the game
+                if point.x == winning_possibility.x3 and point.y == winning_possibility.y3 and point not in X_points + O_points: # If the third point is empty
+                    point.set() # Set the point
+                    return # Exit the function
+        elif winning_possibility.p2_satisfied and winning_possibility.p3_satisfied: # If the second and third points are satisfied
+            for point in XO_points: # For each point in the game
+                if point.x == winning_possibility.x1 and point.y == winning_possibility.y1 and point not in X_points + O_points: # If the first point is empty
+                    point.set() # Set the point
+                    return # Exit the function
+        elif winning_possibility.p3_satisfied and winning_possibility.p1_satisfied: # If the third and first points are satisfied
+            for point in XO_points: # For each point in the game
+                if point.x == winning_possibility.x2 and point.y == winning_possibility.y2 and point not in X_points + O_points: # If the second point is empty
+                    point.set() # Set the point
+                    return # Exit the function
 
     # If the opponent can win in the next move
-    for winning_possibility in winning_possibilities:
-        winning_possibility.check('X')
-        if winning_possibility.p1_satisfied and winning_possibility.p2_satisfied:
-            for point in XO_points:
-                if point.x == winning_possibility.x3 and point.y == winning_possibility.y3 and point not in X_points + O_points:
-                    point.set()
+    for winning_possibility in winning_possibilities: # For each winning possibility
+        winning_possibility.check('X') # Check if the possibility is satisfied by X 
+        if winning_possibility.p1_satisfied and winning_possibility.p2_satisfied: # If the first two points are satisfied
+            for point in XO_points: # For each point in the game
+                if point.x == winning_possibility.x3 and point.y == winning_possibility.y3 and point not in X_points + O_points: # If the third point is empty
+                    point.set() # Set the point
                     return
-        elif winning_possibility.p2_satisfied and winning_possibility.p3_satisfied:
+        elif winning_possibility.p2_satisfied and winning_possibility.p3_satisfied: # If the second and third points are satisfied
             for point in XO_points:
-                if point.x == winning_possibility.x1 and point.y == winning_possibility.y1 and point not in X_points + O_points:
-                    point.set()
+                if point.x == winning_possibility.x1 and point.y == winning_possibility.y1 and point not in X_points + O_points: # If the first point is empty
+                    point.set() # Set the point
                     return
-        elif winning_possibility.p3_satisfied and winning_possibility.p1_satisfied:
-            for point in XO_points:
-                if point.x == winning_possibility.x2 and point.y == winning_possibility.y2 and point not in X_points + O_points:
+        elif winning_possibility.p3_satisfied and winning_possibility.p1_satisfied: # If the third and first points are satisfied
+            for point in XO_points: # For each point in the game
+                if point.x == winning_possibility.x2 and point.y == winning_possibility.y2 and point not in X_points + O_points: # If the second point is empty
                     point.set()
                     return
 
     # If the center is free...
-    center_occupied = False
-    for point in X_points + O_points:
-        if point.x == 2 and point.y == 2:
-            center_occupied = True
-            break
-    if not center_occupied:
-        for point in XO_points:
-            if point.x == 2 and point.y == 2:
-                point.set()
+    center_occupied = False # Variable to keep track of whether the center is occupied
+    for point in X_points + O_points: # For each point occupied by X or O
+        if point.x == 2 and point.y == 2: # If the point is the center
+            center_occupied = True # Mark the center as occupied
+            break # Exit the loop
+    if not center_occupied: # If the center is not occupied
+        for point in XO_points: # For each point in the game 
+            if point.x == 2 and point.y == 2: # If the point is the center
+                point.set() # Set the point
                 return
 
     # Occupy corner or middle based on what opponent occupies
-    corner_points = [(1, 1), (1, 3), (3, 1), (3, 3)]
-    middle_points = [(1, 2), (2, 1), (2, 3), (3, 2)]
-    num_of_corner_points_occupied_by_X = 0
-    for point in X_points:
-        if (point.x, point.y) in corner_points:
-            num_of_corner_points_occupied_by_X += 1
-    if num_of_corner_points_occupied_by_X >= 2:
-        for point in XO_points:
-            if (point.x, point.y) in middle_points and point not in X_points + O_points:
-                point.set()
-                return
-    elif num_of_corner_points_occupied_by_X < 2:
-        for point in XO_points:
-            if (point.x, point.y) in corner_points and point not in X_points + O_points:
-                point.set()
-                return
+    corner_points = [(1, 1), (1, 3), (3, 1), (3, 3)] # List of corner points
+    middle_points = [(1, 2), (2, 1), (2, 3), (3, 2)] # List of middle points
+    num_of_corner_points_occupied_by_X = 0 # Variable to keep track of the number of corner points occupied by X
+    for point in X_points: # For each point occupied by X
+        if (point.x, point.y) in corner_points: # If the point is a corner point
+            num_of_corner_points_occupied_by_X += 1 # Increment the number of corner points occupied by X
+    if num_of_corner_points_occupied_by_X >= 2: # If X occupies at least two corner points
+        for point in XO_points: # For each point in the game
+            if (point.x, point.y) in middle_points and point not in X_points + O_points:  # If the point is a middle point and is not occupied
+                point.set() # Set the point
+                return # Exit the function
+    elif num_of_corner_points_occupied_by_X < 2: # If X occupies less than two corner points
+        for point in XO_points: # For each point in the game
+            if (point.x, point.y) in corner_points and point not in X_points + O_points: # If the point is a corner point and is not occupied
+                point.set() # Set the point
+                return # Exit the function
 
-root.mainloop()
+root.mainloop() # Start the main event loop
